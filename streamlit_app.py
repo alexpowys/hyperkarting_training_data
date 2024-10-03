@@ -90,7 +90,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 # Write directly to the app
 st.title("Active Staff Data")
 st.write(
-    """When using filters, please be aware that filtering is case-sensitive.
+    """When using filters, please be aware that filtering is **case-sensitive**.
     """
 )
 
