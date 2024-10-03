@@ -133,7 +133,7 @@ left join deputy.fact.training_module_recent as t1
 on module_id = t1.id
 left join deputy.fact.hours_by_employee_recent_cycle as t2
 on t0.id = t2.employee
-where active
+--where active
 --where (title is null or title in ('Level 1', 'Level 2', 'Level 3', 'MOD'))
 --qualify row_number() over (partition by t0.id order by title desc) = 1
 order by t0.id;
