@@ -156,6 +156,7 @@ st.write(
 query = '''
 select id, 
 full_name,
+max(training_date) as most_recent_training_date,
 max(case when trim(title) = 'De-Escalating Conflict ' then 1 else 0 end) as de_escalating_conflict,
 max(case when trim(title) = 'Facilities / VA' then 1 else 0 end) as facilities,
 max(case when trim(title) = 'Guest Experience' then 1 else 0 end) as guest_experience,
@@ -179,6 +180,6 @@ cursor.execute(query)
 result = cursor.fetchall()
 
 df2 = pd.DataFrame(result,
-                      columns=['ID', 'full_name', 'de_escalating_conflict', 'facilities', 'guest_experience', 'induction_pack', 'level_1', 'level_1_track', 'level_1_pit', 'level_2', 'level_3', 'mod', 'maintenance_staff', 'mechanic', 'office_assistant', 'first_aid_basics', 'vr', 'venue_trainer'])
+                      columns=['ID', 'full_name', 'most_recent_training_date', 'de_escalating_conflict', 'facilities', 'guest_experience', 'induction_pack', 'level_1', 'level_1_track', 'level_1_pit', 'level_2', 'level_3', 'mod', 'maintenance_staff', 'mechanic', 'office_assistant', 'first_aid_basics', 'vr', 'venue_trainer'])
 
 st.dataframe(filter_dataframe(df2, 'b'))
