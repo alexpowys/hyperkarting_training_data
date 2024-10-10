@@ -12,7 +12,7 @@ import pandas as pd
 import streamlit as st
 
 
-def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+def filter_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
     """
     Adds a UI on top of a dataframe to let viewers filter columns
 
@@ -22,7 +22,7 @@ def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Filtered dataframe
     """
-    modify = st.checkbox("Add filters")
+    modify = st.checkbox("Add filters", key=key)
 
     if not modify:
         return df
@@ -142,7 +142,43 @@ order by t0.id;
 cursor.execute(query)
 result = cursor.fetchall()
 
-df = pd.DataFrame(result,
+df1 = pd.DataFrame(result,
                       columns=['ID', 'full_name', 'display_name', 'start_date', 'termination_date', 'pay_rate', 'days_employed', 'module_id', 'training_date', 'title', 'days_at_level', 'active', 'hrs_worked_fortnight', 'total_shifts_fortnight', 'average_shift_length_fortnight'])
 
-st.dataframe(filter_dataframe(df))
+st.dataframe(filter_dataframe(df1, 'a'))
+
+st.title("Staff Training Data")
+st.write(
+    """When using filters, please be aware that filtering is **case-sensitive**.
+    """
+)
+
+query = '''
+select id, 
+full_name,
+max(case when trim(title) = 'De-Escalating Conflict ' then 1 else 0 end) as de_escalating_conflict,
+max(case when trim(title) = 'Facilities / VA' then 1 else 0 end) as facilities,
+max(case when trim(title) = 'Guest Experience' then 1 else 0 end) as guest_experience,
+max(case when trim(title) = 'Induction Pack' then 1 else 0 end) as induction_pack,
+max(case when trim(title) = 'Level 1' then 1 else 0 end) as level_1,
+max(case when trim(title) = 'Level 1  |  Part 2 (Track)' then 1 else 0 end) as level_1_track,
+max(case when trim(title) = 'Level 1 | Part 1 (Pit)' then 1 else 0 end) as level_1_pit,
+max(case when trim(title) = 'Level 2' then 1 else 0 end) as level_2,
+max(case when trim(title) = 'Level 3' then 1 else 0 end) as level_3,
+max(case when trim(title) = 'MOD' then 1 else 0 end) as mod,
+max(case when trim(title) = 'Maintenance Staff' then 1 else 0 end) as maintenance_staff,
+max(case when trim(title) = 'Mechanic' then 1 else 0 end) as mechanic,
+max(case when trim(title) = 'Office Assistant' then 1 else 0 end) as office_assistant,
+max(case when trim(title) = 'The Basics of First Aid' then 1 else 0 end) as first_aid_basics,
+max(case when trim(title) = 'VR' then 1 else 0 end) as vr,
+max(case when trim(title) = 'Venue Trainer' then 1 else 0 end) as venue_trainer
+from deputy.fact.staff_training group by id, full_name order by id;
+'''
+
+cursor.execute(query)
+result = cursor.fetchall()
+
+df2 = pd.DataFrame(result,
+                      columns=['ID', 'full_name', 'de_escalating_conflict', 'facilities', 'guest_experience', 'induction_pack', 'level_1', 'level_1_track', 'level_1_pit', 'level_2', 'level_3', 'mod', 'maintenance_staff', 'mechanic', 'office_assistant', 'first_aid_basics', 'vr', 'venue_trainer'])
+
+st.dataframe(filter_dataframe(df2, 'b'))
